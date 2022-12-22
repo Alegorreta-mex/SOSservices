@@ -1,0 +1,111 @@
+{% extends 'general/BaseHtml.html' %}
+{% load crispy_forms_filters %}
+{% block extrastyle %}
+    {% include 'modules/datatables/CSS.html' %}
+{% endblock %}
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ title }}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        {#                        <li class="breadcrumb-item"><a href="#">Home</a></li>#}
+                        <li class="breadcrumb-item active">Create</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <a href="{% url 'task:task-create' %}" class="btn btn-success">
+                            <i class="fas fa-add"></i> Create
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="table"
+                           class="table table-bordered table-striped dataTable drt-inline">
+                    </table>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block extrascripts %}
+    {% include 'modules/datatables/JS.html' %}
+    <script>
+        var table;
+
+        $(document).ready(function () {
+            start_table()
+        });
+
+        function start_table() {
+            table = $('#table').DataTable({
+                "serverSide": true,
+                "ajax": "{% url 'task:api-task-list' %}?format=datatables",
+                "responsive": true,
+                "lengthChange": false,
+                "aaSorting": [],
+                "autoWidth": false,
+                "pageLength": 10,
+                "searching": false,
+                "columns": [
+                    {
+                        title: "id",
+                        visible: false,
+                        data: "id"
+                    },
+                    {
+                        title: "Title",
+                        width: "30%",
+                        data: "title"
+                    },
+                    {
+                        title: "Responsible",
+                        width: "20%",
+                        data: "responsible"
+                    },
+                    {
+                        title: "start",
+                        width: "20%",
+                        data: "date_start"
+                    },
+                    {
+                        title: "close",
+                        width: "20%",
+                        data: "date_close"
+                    },
+                    {
+                        title: "Details",
+                        width: "10%"
+                    }
+                ],
+                "columnDefs": [
+                    {
+                        targets: -1,
+                        render: function (data, type, row) {
+                            return `<a href="{% url 'task:task-update' 0 %}" class="btn btn-info btn-flat sizeBtn" >
+                            <i class="fa fa-edit"></i>
+                            </a>`.replace(0, data)
+                        },
+
+                    },
+                ],
+            });
+
+            table.draw()
+        }
+    </script>
+{% endblock %}
