@@ -40,3 +40,8 @@ class TaskListAPIView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskListSerializer
     permission_classes = [IsAuthenticated]
+
+
+class NewListView(AuthBaseTemplateView):
+    title = "List Tasks 2"
+    template_name = 'task/List2.html'
